@@ -19,7 +19,8 @@ db.connect((err) => {
     db.changeUser({ database }, (err) => {
       if (err) throw new Error(err);
       // Create the users table
-      const usersQuery = `CREATE TABLE IF NOT EXISTS users (
+      const usersQuery = `
+                          CREATE TABLE IF NOT EXISTS users (
                           id int NOT NULL AUTO_INCREMENT,
                           username varchar(50) NOT NULL,
                           img_profile varchar(255),
@@ -33,10 +34,10 @@ db.connect((err) => {
 
 
       const postsQuery = `
-      CREATE TABLE IF NOT EXISTS posts(
-        id int NOT NULL AUTO_INCREMENT,
-        content varchar(255) NOT NULL
-        );`
+                        CREATE TABLE IF NOT EXISTS posts(
+                        id int NOT NULL AUTO_INCREMENT,
+                        content varchar(255) NOT NULL
+                        );`
       db.query(postsQuery, (err) => {
         if (err) throw new Error(err);
       });
