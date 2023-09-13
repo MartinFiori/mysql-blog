@@ -5,7 +5,7 @@ const {
   liked_table,
 } = require("../utils/config.js");
 const db = require("../db.js");
-const { createHash } = require("../utils/hash/hash.js");
+const { createHash, isSamePwd } = require("../utils/hash/hash.js");
 
 class Auth {
   static signup(req, res) {
@@ -41,8 +41,9 @@ class Auth {
       const userFoundQuery = `SELECT * FROM ${users_table} WHERE email = ?`;
       db.query(userFoundQuery, [email], (err, [userFound]) => {
         if (err) return res.json({ error: err.message });
-        if (!userFound) return res.json("nadie");
-        res.json(userFound);
+        if (!userFound) return res.json({ error: "User not found" });
+        if (!isSamePwd(password, userFound.password))
+          return res.json({ error: "Wrong password" });
       });
     } catch (err) {
       return res.status(400).json({ error: err.message });
