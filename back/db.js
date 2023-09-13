@@ -39,9 +39,11 @@ db.connect((err) => {
                         CREATE TABLE IF NOT EXISTS posts(
                         id int NOT NULL AUTO_INCREMENT,
                         content varchar(255) NOT NULL,
+                        user_id INT NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
                         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                        PRIMARY KEY(id)
+                        PRIMARY KEY(id),
+                        FOREIGN KEY (id) REFERENCES users(id)
                         );`;
       db.query(postsQuery, (err) => {
         if (err) throw new Error(err);
