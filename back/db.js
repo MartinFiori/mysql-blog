@@ -27,6 +27,8 @@ db.connect((err) => {
                           img_profile varchar(255) DEFAULT 'https://res.cloudinary.com/dax0wf30d/image/upload/v1643930406/neko_znzpow.jpg',
                           email varchar(60) NOT NULL,
                           password varchar(255) NOT NULL,
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
+                          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                           PRIMARY KEY(id)
                           );`;
       db.query(usersQuery, (err) => {
@@ -37,6 +39,8 @@ db.connect((err) => {
                         CREATE TABLE IF NOT EXISTS posts(
                         id int NOT NULL AUTO_INCREMENT,
                         content varchar(255) NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
+                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                         PRIMARY KEY(id)
                         );`;
       db.query(postsQuery, (err) => {
@@ -48,6 +52,8 @@ db.connect((err) => {
                             id int NOT NULL AUTO_INCREMENT,
                             user_id INT NOT NULL,
                             post_id INT NOT NULL,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                             PRIMARY KEY(id),
                             FOREIGN KEY (id) REFERENCES users(id),
                             FOREIGN KEY (id) REFERENCES posts(id)
@@ -61,6 +67,8 @@ db.connect((err) => {
                         id int NOT NULL AUTO_INCREMENT,
                         user_id INT NOT NULL,
                         post_id INT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
+                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                         PRIMARY KEY(id),
                         FOREIGN KEY (id) REFERENCES users(id),
                         FOREIGN KEY (id) REFERENCES posts(id)
