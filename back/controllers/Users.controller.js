@@ -16,15 +16,15 @@ class Users {
 
   static myPosts(req, res) {
     const { id } = req.params;
-    const postsQuery = `SELECT * FROM ${posts_table} WHERE user_id = ? ORDER BY id DESC;`
+    const postsQuery = `SELECT * FROM ${posts_table} WHERE user_id = ? ORDER BY id DESC;`;
     db.query(postsQuery, [id], (err, user_posts) => {
       if (err) return res.json({ error: err.message });
-      res.json(user_posts)
-    })
+      res.json(user_posts);
+    });
   }
 
   static createPost(req, res) {
-    const { id } = req.params
+    const { id } = req.params;
   }
 
   static insertPosts(req, res) {
@@ -75,7 +75,7 @@ class Users {
         // min and max included
         return Math.floor(Math.random() * (max - min + 1) + min);
       }
-      const num = random(0, 5)
+      const num = random(0, 5);
       const query = `INSERT INTO ${posts_table}(content,user_id) VALUES(?, ?)`;
       // console.log(num, i);
       db.query(query, [arr[i], num], (err, data) => {
@@ -87,7 +87,7 @@ class Users {
         // min and max included
         return Math.floor(Math.random() * (max - min + 1) + min);
       }
-      const num = random(0, 5)
+      const num = random(0, 5);
       const query = `INSERT INTO ${posts_table}(content,user_id) VALUES(?, ?)`;
       // console.log(num, i);
       db.query(query, [arr[i], num], (err, data) => {
