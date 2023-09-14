@@ -22,7 +22,12 @@ class Users {
       res.json(user_posts)
     })
   }
+
   static createPost(req, res) {
+    const { id } = req.params
+  }
+
+  static insertPosts(req, res) {
     const users = [
       { username: "vayne", password: "vayne", email: "vayne@gmail.com" },
       { username: "singed", password: "singed", email: "singed@gmail.com" },
