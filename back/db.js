@@ -43,7 +43,7 @@ db.connect((err) => {
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
                         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                         PRIMARY KEY(id),
-                        FOREIGN KEY (id) REFERENCES users(id)
+                        FOREIGN KEY (user_id) REFERENCES users(id)
                         );`;
       db.query(postsQuery, (err) => {
         if (err) throw new Error(err);
