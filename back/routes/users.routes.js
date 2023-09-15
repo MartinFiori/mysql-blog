@@ -8,7 +8,7 @@ router.put("/:id", Users.updatePost);
 
 router.post('/like', Users.likePost)
 router.post('/favorite', Users.favoritePost)
+router.post("/insert", Users.insertPosts);
 router.post("/:id", Users.createPost);
-// router.post("/", Users.insertPosts);
 
 module.exports = router;

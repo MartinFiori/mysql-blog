@@ -55,20 +55,12 @@ db.connect((err) => {
                             user_id INT NOT NULL,
                             post_id INT NOT NULL,
                             PRIMARY KEY(id),
-                            FOREIGN KEY (id) REFERENCES users(id),
-                            FOREIGN KEY (id) REFERENCES posts(id)
+                            FOREIGN KEY (user_id) REFERENCES users(id),
+                            FOREIGN KEY (post_id) REFERENCES posts(id)
                             );`;
       db.query(favoritesQuery, (err) => {
         if (err) throw new Error(err);
       });
-
-      const posted = `
-      SELECT u.username, p.user_id, p.content FROM users AS u
-      INNER JOIN liked AS l
-      ON l.user_id = u.id
-      INNER JOIN posts AS p
-      ON p.id = l.post_id;
-      `
 
       const likedQuery = `
                         CREATE TABLE IF NOT EXISTS liked(
@@ -76,8 +68,8 @@ db.connect((err) => {
                         user_id INT NOT NULL,
                         post_id INT NOT NULL,
                         PRIMARY KEY(id),
-                        FOREIGN KEY (id) REFERENCES users(id),
-                        FOREIGN KEY (id) REFERENCES posts(id)
+                        FOREIGN KEY (user_id) REFERENCES users(id),
+                        FOREIGN KEY (post_id) REFERENCES posts(id)
                         );`;
       db.query(likedQuery, (err) => {
         if (err) throw new Error(err);
