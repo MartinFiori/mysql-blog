@@ -9,40 +9,65 @@ const db = require("../db.js");
 class Users {
   static allPosts(req, res) {
     const postsQuery = `SELECT * FROM ${posts_table} ORDER BY created_at DESC`;
+    try {
+
+    } catch (err) {
+      return res.json({ error: err.message })
+    }
     db.query(postsQuery, (err, data) => {
       if (err) return res.json({ error: err.message });
     });
   }
 
   static myPosts(req, res) {
-    const { id } = req.params;
-    const postsQuery = `SELECT * FROM ${posts_table} WHERE user_id = ? ORDER BY id DESC;`;
-    db.query(postsQuery, [id], (err, user_posts) => {
-      if (err) return res.json({ error: err.message });
-      res.json(user_posts);
-    });
+    try {
+      const { id } = req.params;
+      const postsQuery = `SELECT * FROM ${posts_table} WHERE user_id = ? ORDER BY id DESC;`;
+      db.query(postsQuery, [id], (err, user_posts) => {
+        if (err) return res.json({ error: err.message });
+        res.json(user_posts);
+      });
+    } catch (err) {
+      return res.json({ error: err.message })
+    }
   }
 
   static createPost(req, res) {
-    const { id } = req.params;
-    const { content } = req.body;
-    if (!id) return res.status(400).json({ error: "Missing user id" });
-    if (!content)
-      return res.status(400).json({ error: "Cannot post without content" });
-    const query = `INSERT INTO ${posts_table} (content,user_id) VALUES(?,?)`;
-    db.query(query, [content, parseInt(id)], (err, creation) => {
-      console.log(query, content, id);
-      if (err) return res.json({ error: err.message });
-      return res.json("Post created");
-    });
+    try {
+      const { id } = req.params;
+      const { content } = req.body;
+      if (!id) return res.status(400).json({ error: "Missing user id" });
+      if (!content)
+        return res.status(400).json({ error: "Cannot post without content" });
+      const query = `INSERT INTO ${posts_table} (content,user_id) VALUES(?,?)`;
+      db.query(query, [content, parseInt(id)], (err, creation) => {
+        if (err) return res.json({ error: err.message });
+        return res.json("Post created");
+      });
+    } catch (err) {
+      return res.json({ error: err.message })
+    }
   }
 
   static updatePost(req, res) {
-    const { id } = req.params;
-    const { content } = req.body;
-    if (!id) return res.status(400).json({ error: "Missing user id" });
-    if (!content)
-      return res.status(400).json({ error: "Cannot post without content" });
+    try {
+      const { id } = req.params;
+      const { content } = req.body;
+      if (!id) return res.status(400).json({ error: "Missing user id" });
+      if (!content)
+        return res.status(400).json({ error: "Cannot edit without content" });
+      const query = `UPDATE ${posts_table} SET content = ? WHERE id = ?; `
+      db.query(query, [content, id], (err, data) => {
+        if (err) return res.json({ error: err.message });
+        res.json('Post edited!')
+      });
+    } catch (err) {
+      return res.json({ erro: err.message })
+    }
+  }
+
+  static likePost(req, res) {
+    const { id, user_id } = req.body;
   }
 
   static insertPosts(req, res) {

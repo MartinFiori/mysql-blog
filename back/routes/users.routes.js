@@ -3,6 +3,9 @@ const Users = require("../controllers/Users.controller.js");
 
 router.get("/", Users.allPosts);
 router.get("/:id", Users.myPosts);
+
+router.put("/:id", Users.updatePost);
+
 router.post("/:id", Users.createPost);
 router.post("/", Users.insertPosts);
 
