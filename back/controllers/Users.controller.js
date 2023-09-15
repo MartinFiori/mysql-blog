@@ -8,15 +8,15 @@ const db = require("../db.js");
 
 class Users {
   static allPosts(req, res) {
-    const postsQuery = `SELECT * FROM ${posts_table} ORDER BY created_at DESC`;
     try {
-
+      const postsQuery = `SELECT * FROM ${posts_table} ORDER BY created_at DESC`;
+      db.query(postsQuery, (err, posts) => {
+        if (err) return res.json({ error: err.message })
+        res.json(posts)
+      })
     } catch (err) {
       return res.json({ error: err.message })
     }
-    db.query(postsQuery, (err, data) => {
-      if (err) return res.json({ error: err.message });
-    });
   }
 
   static myPosts(req, res) {
@@ -57,17 +57,62 @@ class Users {
       if (!content)
         return res.status(400).json({ error: "Cannot edit without content" });
       const query = `UPDATE ${posts_table} SET content = ? WHERE id = ?; `
-      db.query(query, [content, id], (err, data) => {
+      db.query(query, [content, id], (err) => {
         if (err) return res.json({ error: err.message });
         res.json('Post edited!')
       });
     } catch (err) {
-      return res.json({ erro: err.message })
+      return res.json({ error: err.message })
     }
   }
 
   static likePost(req, res) {
-    const { id, user_id } = req.body;
+    const { post_id, user_id } = req.body;
+    // Validate input
+    if (![post_id, user_id].every(Boolean)) {
+      return res.status(400).json({ error: "Missing id's" });
+    }
+    const findUserQuery = `SELECT * FROM ${users_table} WHERE id = ?;`;
+    const findPostQuery = `SELECT * FROM ${posts_table} WHERE id = ?;`;
+    const likeQuery = `INSERT INTO ${liked_table} (user_id, post_id) VALUES (?, ?);`;
+    // Check if user and post exist and then insert the like
+    db.query(findUserQuery, [user_id], (err, [user]) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      if (!user) {
+        return res.json({ error: "User doesn't exist" });
+      }
+      db.query(findPostQuery, [post_id], (err, [post]) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        if (!post) {
+          return res.json({ error: "Post doesn't exist" });
+        }
+        db.query(likeQuery, [user_id, post_id], (err) => {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+          return res.json({ message: 'Post liked!' });
+        });
+      });
+    });
+  }
+
+
+  static favoritePost(req, res) {
+    const { post_id, user_id } = req.body;
+    try {
+      if (![post_id, user_id]) return res.status(400).json({ error: "Missing id's" });
+      const query = `INSERT INTO ${favorites_table}(user_id,post_id) VALUES (?,?)`
+      db.query(query, [user_id, post_id], (err) => {
+        if (err) return res.json({ error: err.message });
+        res.json('Post saved!')
+      })
+    } catch (err) {
+      return res.json({ error: err.message })
+    }
   }
 
   static insertPosts(req, res) {
@@ -85,8 +130,8 @@ class Users {
       db.query(
         `INSERT INTO ${users_table} (username,password,email) VALUES (?, ?, ?)`,
         [username, password, email],
-        (err, data) => {
-          // if (err) return res.status(400).json({ error: err.message })
+        (err) => {
+          if (err) return res.status(400).json({ error: err.message })
         }
       );
     }
@@ -121,7 +166,7 @@ class Users {
       const num = random(0, 5);
       const query = `INSERT INTO ${posts_table}(content,user_id) VALUES(?, ?)`;
       // console.log(num, i);
-      db.query(query, [arr[i], num], (err, data) => {
+      db.query(query, [arr[i], num], (err) => {
         // if (err) return res.json({ error: err.message })
       });
     }
@@ -133,8 +178,8 @@ class Users {
       const num = random(0, 5);
       const query = `INSERT INTO ${posts_table}(content,user_id) VALUES(?, ?)`;
       // console.log(num, i);
-      db.query(query, [arr[i], num], (err, data) => {
-        // if (err) return res.json({ error: err.message })
+      db.query(query, [arr[i], num], (err) => {
+        if (err) return res.json({ error: err.message })
       });
     }
     res.json("todo ok");

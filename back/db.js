@@ -54,8 +54,6 @@ db.connect((err) => {
                             id int NOT NULL AUTO_INCREMENT,
                             user_id INT NOT NULL,
                             post_id INT NOT NULL,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                             PRIMARY KEY(id),
                             FOREIGN KEY (id) REFERENCES users(id),
                             FOREIGN KEY (id) REFERENCES posts(id)
@@ -64,13 +62,19 @@ db.connect((err) => {
         if (err) throw new Error(err);
       });
 
+      const posted = `
+      SELECT u.username, p.user_id, p.content FROM users AS u
+      INNER JOIN liked AS l
+      ON l.user_id = u.id
+      INNER JOIN posts AS p
+      ON p.id = l.post_id;
+      `
+
       const likedQuery = `
                         CREATE TABLE IF NOT EXISTS liked(
                         id int NOT NULL AUTO_INCREMENT,
                         user_id INT NOT NULL,
                         post_id INT NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                         PRIMARY KEY(id),
                         FOREIGN KEY (id) REFERENCES users(id),
                         FOREIGN KEY (id) REFERENCES posts(id)

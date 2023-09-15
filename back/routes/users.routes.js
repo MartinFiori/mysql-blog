@@ -6,7 +6,9 @@ router.get("/:id", Users.myPosts);
 
 router.put("/:id", Users.updatePost);
 
+router.post('/like', Users.likePost)
+router.post('/favorite', Users.favoritePost)
 router.post("/:id", Users.createPost);
-router.post("/", Users.insertPosts);
+// router.post("/", Users.insertPosts);
 
 module.exports = router;
