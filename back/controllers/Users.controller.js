@@ -26,16 +26,25 @@ class Users {
   static createPost(req, res) {
     const { id } = req.params;
     const { content } = req.body;
-    const query = `INSERT INTO ${posts_table} (content,user_id) VALUES(?,?)`;
     if (!id) return res.status(400).json({ error: "Missing user id" });
     if (!content)
       return res.status(400).json({ error: "Cannot post without content" });
+    const query = `INSERT INTO ${posts_table} (content,user_id) VALUES(?,?)`;
     db.query(query, [content, parseInt(id)], (err, creation) => {
       console.log(query, content, id);
       if (err) return res.json({ error: err.message });
       return res.json("Post created");
     });
   }
+
+  static updatePost(req, res) {
+    const { id } = req.params;
+    const { content } = req.body;
+    if (!id) return res.status(400).json({ error: "Missing user id" });
+    if (!content)
+      return res.status(400).json({ error: "Cannot post without content" });
+  }
+
   static insertPosts(req, res) {
     const users = [
       { username: "vayne", password: "vayne", email: "vayne@gmail.com" },
