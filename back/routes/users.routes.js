@@ -12,6 +12,8 @@ router.post("/favorite", Users.favoritePost);
 router.post("/insert", Users.insertPosts);
 router.post("/:id", Users.createPost);
 
+router.delete("/:id", Users.deleteFavoritePost);
+
 module.exports = router;
 // SELECT u.username, p.content
 // FROM users AS u

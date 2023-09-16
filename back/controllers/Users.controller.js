@@ -76,23 +76,15 @@ class Users {
     const likeQuery = `INSERT INTO ${liked_table} (user_id, post_id) VALUES (?, ?);`;
 
     db.query(findUserQuery, [user_id], (err, [user]) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      if (!user) {
-        return res.status(400).json({ error: "User doesn't exist" });
-      }
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (!user) return res.status(400).json({ error: "User doesn't exist" });
+
       db.query(findPostQuery, [post_id], (err, [post]) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        if (!post) {
-          return res.status(400).json({ error: "Post doesn't exist" });
-        }
+        if (err) return res.status(500).json({ error: err.message });
+        if (!post) return res.status(400).json({ error: "Post doesn't exist" });
         db.query(likeQuery, [user_id, post_id], (err) => {
-          if (err) {
-            return res.status(500).json({ error: err.message });
-          }
+          if (err) return res.status(500).json({ error: err.message });
           return res.json("Post liked!");
         });
       });
@@ -150,7 +142,33 @@ class Users {
         res.json(posts);
       });
     } catch (err) {
-      return res.status(400).json({ error: err });
+      return res.status(400).json({ error: err.message });
+    }
+  }
+
+  static deleteFavoritePost(req, res) {
+    console.log(req.body);
+    try {
+      const { user_id, post_id } = req.body;
+      if (!post_id) return res.status(400).json({ error: "Missing post id" });
+      const findPostQuery = `SELECT * FROM ${posts_table} WHERE id = ?`;
+      const deletePostQuery = `DELETE FROM ${favorites_table} WHERE user_id = ? AND post_id = ?`;
+      const findUserQuery = `SELECT * FROM ${users_table} WHERE id = ?`;
+      db.query(findUserQuery, [user_id], (err, [user]) => {
+        if (err) return res.status(400).json({ error: err.message });
+        if (!user) return res.status(404).json({ error: "User not found" });
+        db.query(findPostQuery, [post_id], (err, [post]) => {
+          if (err) return res.status(400).json({ error: err.message });
+          if (!post) return res.status(404).json({ error: "Post not found" });
+          db.query(deletePostQuery, [user_id, post_id], (err, data) => {
+            if (err) return res.status(400).json({ error: err.message });
+            console.log(data);
+            res.json("Post deleted");
+          });
+        });
+      });
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
     }
   }
 
