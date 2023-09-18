@@ -123,7 +123,19 @@ class Users {
 
   static deletePost(req, res) {
     try {
-      const { id } = req.params;
+      const { post_id, user_id } = req.body;
+      if (!id) return res.status(400).json({ error: "Missing post's id" });
+      const findPostQuery = `SELECT * FROM ${posts_table} WHERE id = ?`;
+      const deletePostQuery = `DELETE FROM ${posts_table} WHERE user_id = ? AND id = ?`
+      db.query(findPostQuery, [post_id], (err, [post]) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!post) return res.status(400).json({ error: "Post not found!" });
+        if (post.user_id != user_id) return res.status(401).json({ error: "Cannot delete post" });
+        db.query(deletePostQuery, [user_id, post_id], (err) => {
+          if (err) return res.status(500).json({ error: err.message });
+          res.json("Post deleted!");
+        })
+      })
     } catch (err) {
       return res.json({ error: err.message });
     }

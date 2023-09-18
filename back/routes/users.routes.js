@@ -6,10 +6,10 @@ router.post("/insert", Users.insertPosts);
 
 // post routes
 router.get("/post", Users.allPosts);
+router.delete('/post', Users.deletePost)
 router.put("/post/:id", Users.updatePost);
 router.get("/post/:id", Users.myPosts);
 router.post("/post/:id", Users.createPost);
-router.delete('/post/:id', Users.deletePost)
 
 // like routes
 router.post("/liked", Users.likePost);
