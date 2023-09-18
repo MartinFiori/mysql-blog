@@ -1,18 +1,25 @@
 const router = require("express").Router();
 const Users = require("../controllers/Users.controller.js");
 
-router.get("/favorite/:id", Users.getFavoritePosts);
-router.get("/:id", Users.myPosts);
-router.get("/", Users.allPosts);
-
-router.put("/:id", Users.updatePost);
-
-router.post("/like", Users.likePost);
-router.post("/favorite", Users.favoritePost);
 router.post("/insert", Users.insertPosts);
-router.post("/:id", Users.createPost);
 
-router.delete("/:id", Users.deleteFavoritePost);
+
+// post routes
+router.get("/post", Users.allPosts);
+router.put("/post/:id", Users.updatePost);
+router.get("/post/:id", Users.myPosts);
+router.post("/post/:id", Users.createPost);
+router.delete('/post/:id', Users.deletePost)
+
+// like routes
+router.post("/liked", Users.likePost);
+router.get("/liked/:id", Users.getLikedPosts);
+router.delete("/liked/:id", Users.deleteFavoritePost);
+
+// favorite routes
+router.post("/favorite", Users.favoritePost);
+router.get("/favorite/:id", Users.getFavoritePosts);
+router.delete("/favorite/:id", Users.deleteFavoritePost);
 
 module.exports = router;
 // SELECT u.username, p.content
