@@ -62,6 +62,19 @@ db.connect((err) => {
         if (err) throw new Error(err);
       });
 
+      const visitsQuery = `
+                          CREATE TABLE IF NOT EXISTS visits(
+                            id int NOT NULL auto_increment,
+                            user_id INT NOT NULL,
+                            visited_times INT NOT NULL,
+                            PRIMARY KEY(id),
+                            FOREIGN KEY (user_id) REFERENCES users(id)
+                          );
+                          `
+      db.query(visitsQuery, (err) => {
+        if (err) throw new Error(err);
+      });
+
       const likedQuery = `
                         CREATE TABLE IF NOT EXISTS liked(
                         id int NOT NULL AUTO_INCREMENT,

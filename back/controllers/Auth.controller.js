@@ -18,7 +18,7 @@ class Auth {
         return res.json({ error: "Email format invalid." });
       const userFoundQuery = `SELECT * FROM ${users_table} WHERE email = ?`;
       const createUserQuery = `INSERT INTO ${users_table}( email, password, username ) VALUES(?)`;
-
+      const query = `INSERT INTO visits( user_id, visited_times ) VALUES(?, 0)`;
       db.query(userFoundQuery, [email], (err, result) => {
         if (err) return res.json({ error: err.message });
         if (result.length) return res.json({ error: "User already exists." });
@@ -27,6 +27,10 @@ class Auth {
           [[email, createHash(password), username]],
           (err, data) => {
             if (err) return res.json({ error: err.message });
+            console.log('SOY LA DATAAAAA', data)
+            db.query(query, [data.insertId], (err) => {
+              if (err) return res.json({ error: err.message });
+            })
             res.json("User created successfully");
           }
         );
@@ -48,7 +52,11 @@ class Auth {
         if (!isSamePwd(password, userFound.password))
           return res.json({ error: "Wrong password" });
         delete userFound.password;
-        return res.json(userFound);
+        const query = `UPDATE visits SET visited_times = visited_times + 1  WHERE user_id = ?`;
+        db.query(query, [userFound.id, userFound.id], (err) => {
+          if (err) return res.json({ error: err.message });
+          return res.json(userFound);
+        })
       });
     } catch (err) {
       return res.status(400).json({ error: err.message });
