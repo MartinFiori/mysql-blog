@@ -9,6 +9,8 @@ const {
   LIKED_TABLE,
   POSTS_TABLE,
   DB_ROUNDS,
+  EXPIRES_IN,
+  SECRET
 } = process.env;
 
 module.exports = {
@@ -21,4 +23,6 @@ module.exports = {
   favorites_table: FAVORITES_TABLE,
   liked_table: LIKED_TABLE,
   posts_table: POSTS_TABLE,
+  expiresIn: EXPIRES_IN,
+  secret: SECRET,
 };

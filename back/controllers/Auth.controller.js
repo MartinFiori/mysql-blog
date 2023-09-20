@@ -1,12 +1,10 @@
 const {
   users_table,
-  posts_table,
-  favorites_table,
-  liked_table,
 } = require("../utils/config.js");
 const db = require("../db.js");
 const { createHash, isSamePwd } = require("../utils/hash/hash.js");
 const isValidEmail = require("../utils/isValidEmail.js");
+const createToken = require("../utils/createToken.js");
 
 class Auth {
   static signup(req, res) {
@@ -46,16 +44,17 @@ class Auth {
       if (![password, email].every(Boolean))
         return res.json({ error: "Please complete all inputs." });
       const userFoundQuery = `SELECT * FROM ${users_table} WHERE email = ?`;
+      const query = `UPDATE visits SET visited_times = visited_times + 1  WHERE user_id = ?`;
       db.query(userFoundQuery, [email], (err, [userFound]) => {
         if (err) return res.json({ error: err.message });
         if (!userFound) return res.json({ error: "User not found" });
         if (!isSamePwd(password, userFound.password))
           return res.json({ error: "Wrong password" });
         delete userFound.password;
-        const query = `UPDATE visits SET visited_times = visited_times + 1  WHERE user_id = ?`;
         db.query(query, [userFound.id, userFound.id], (err) => {
           if (err) return res.json({ error: err.message });
-          return res.json(userFound);
+          const token = createToken(userFound)
+          res.json({ user: userFound, token })
         })
       });
     } catch (err) {
